@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- icon svg -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>"
+    />
+    <title>Responses API Test Client</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --panel-soft: #f0f4f8;
+        --text: #172033;
+        --muted: #607089;
+        --border: #d7deea;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --danger: #dc2626;
+        --success: #15803d;
+        --shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+      }
+
+      [data-theme='dark'] {
+        color-scheme: dark;
+        --bg: #10141d;
+        --panel: #171d29;
+        --panel-soft: #202838;
+        --text: #eef3ff;
+        --muted: #9dacbf;
+        --border: #2f3a4f;
+        --primary: #5b8cff;
+        --primary-hover: #78a1ff;
+        --danger: #fb7185;
+        --success: #4ade80;
+        --shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.5;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      .app {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        height: 100vh;
+        overflow: hidden;
+        padding: 28px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.35rem, 2vw, 2rem);
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .grid {
+        min-height: 0;
+        flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: minmax(320px, 0.9fr) minmax(360px, 1.1fr);
+        gap: 18px;
+      }
+
+      .panel {
+        min-height: 0;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+
+      form.panel {
+        overflow: auto;
+      }
+
+      .response-panel {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 1rem;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+        margin-bottom: 14px;
+      }
+
+      label,
+      .field-label {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 650;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        color: var(--text);
+        padding: 10px 11px;
+        outline: none;
+      }
+
+      textarea {
+        min-height: 132px;
+        resize: vertical;
+        white-space: pre-wrap;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+
+      button {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        color: var(--text);
+        padding: 10px 13px;
+        cursor: pointer;
+        min-height: 42px;
+      }
+
+      button.primary {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: #ffffff;
+      }
+
+      button.primary:hover {
+        background: var(--primary-hover);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
+      .status {
+        min-height: 28px;
+        margin-bottom: 12px;
+        color: var(--muted);
+      }
+
+      .status strong {
+        color: var(--success);
+      }
+
+      .status.error strong {
+        color: var(--danger);
+      }
+
+      .output {
+        min-height: 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        padding: 14px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        overflow: auto;
+      }
+
+      #contentOutput {
+        flex: 1 1 0;
+      }
+
+      .reasoning {
+        min-height: 0;
+        flex: 0 0 34%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 14px;
+      }
+
+      .reasoning .output {
+        flex: 1 1 0;
+        color: var(--muted);
+      }
+
+      pre {
+        margin: 0;
+        max-height: 260px;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--panel-soft);
+        color: var(--text);
+        padding: 12px;
+        white-space: pre-wrap;
+      }
+
+      @media (max-width: 860px) {
+        .grid,
+        .row {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .toolbar {
+          justify-content: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <div>
+          <h1>Responses API Test Client</h1>
+          <p class="subtitle">Test streaming response dari backend lokal.</p>
+        </div>
+        <div class="toolbar">
+          <button id="themeToggle" type="button">Dark mode</button>
+        </div>
+      </header>
+
+      <section class="grid">
+        <form class="panel" id="requestForm">
+          <h2>Request</h2>
+
+          <div class="field">
+            <label for="apiUrl">API URL</label>
+            <input id="apiUrl" name="apiUrl" value="http://127.0.0.1:3000/api/responses" />
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="payloadMode">Payload field</label>
+              <select id="payloadMode" name="payloadMode">
+                <option value="messages">messages</option>
+                <option value="input">input</option>
+                <option value="prompt">prompt</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="assistantRole">Assistant role</label>
+              <select id="assistantRole" name="assistantRole">
+                <option value="assistant">assistant</option>
+                <option value="system">system</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="assistantContent">Assistant content</label>
+            <textarea id="assistantContent" name="assistantContent">Anda adalah assistant yang membantu.</textarea>
+          </div>
+
+          <div class="field">
+            <label for="userContent">User content</label>
+            <textarea id="userContent" name="userContent">Selamat sore!</textarea>
+          </div>
+
+          <div class="field">
+            <div class="field-label" id="payloadPreviewLabel">Payload preview</div>
+            <pre id="payloadPreview" aria-labelledby="payloadPreviewLabel"></pre>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="sendButton" type="submit">Send</button>
+            <button id="stopButton" type="button" disabled>Stop</button>
+            <button id="clearButton" type="button">Clear</button>
+          </div>
+        </form>
+
+        <section class="panel response-panel">
+          <h2>Response</h2>
+          <div class="status" id="statusText">Ready.</div>
+          <div class="output" id="contentOutput"></div>
+
+          <div class="reasoning">
+            <h2>Reasoning</h2>
+            <div class="output" id="reasoningOutput"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const root = document.documentElement;
+      const form = document.querySelector('#requestForm');
+      const apiUrlInput = document.querySelector('#apiUrl');
+      const payloadModeInput = document.querySelector('#payloadMode');
+      const assistantRoleInput = document.querySelector('#assistantRole');
+      const assistantContentInput = document.querySelector('#assistantContent');
+      const userContentInput = document.querySelector('#userContent');
+      const payloadPreview = document.querySelector('#payloadPreview');
+      const contentOutput = document.querySelector('#contentOutput');
+      const reasoningOutput = document.querySelector('#reasoningOutput');
+      const statusText = document.querySelector('#statusText');
+      const sendButton = document.querySelector('#sendButton');
+      const stopButton = document.querySelector('#stopButton');
+      const clearButton = document.querySelector('#clearButton');
+      const themeToggle = document.querySelector('#themeToggle');
+
+      let controller = null;
+
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+      function buildPayload() {
+        const mode = payloadModeInput.value;
+        const assistantContent = assistantContentInput.value;
+        const userContent = userContentInput.value;
+
+        if (mode === 'prompt') {
+          return {
+            prompt: userContent,
+          };
+        }
+
+        return {
+          [mode]: [
+            {
+              role: assistantRoleInput.value,
+              content: assistantContent,
+            },
+            {
+              role: 'user',
+              content: userContent,
+            },
+          ],
+        };
+      }
+
+      function updatePreview() {
+        payloadPreview.textContent = JSON.stringify(buildPayload(), null, 2);
+      }
+
+      function setTheme(theme) {
+        root.dataset.theme = theme;
+        localStorage.setItem('theme', theme);
+        themeToggle.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+      }
+
+      function setBusy(isBusy) {
+        sendButton.disabled = isBusy;
+        stopButton.disabled = !isBusy;
+      }
+
+      function setStatus(message, isError = false) {
+        statusText.classList.toggle('error', isError);
+        statusText.textContent = '';
+
+        if (isError) {
+          const strong = document.createElement('strong');
+          strong.textContent = 'Error: ';
+          statusText.append(strong, message);
+          return;
+        }
+
+        statusText.textContent = message;
+      }
+
+      function appendText(element, text) {
+        element.textContent += text;
+        element.scrollTop = element.scrollHeight;
+      }
+
+      function parseSSEBlock(block) {
+        const dataLines = block
+          .split(/\r?\n/)
+          .filter((line) => line.startsWith('data:'))
+          .map((line) => line.slice('data:'.length).trim());
+
+        if (dataLines.length === 0) return null;
+
+        const data = dataLines.join('\n');
+
+        if (data === '[DONE]') {
+          return '[DONE]';
+        }
+
+        try {
+          return JSON.parse(data);
+        } catch {
+          return null;
+        }
+      }
+
+      function handleSSEPayload(payload) {
+        if (!payload) return false;
+
+        if (payload === '[DONE]') {
+          setStatus('Done.');
+          return true;
+        }
+
+        if (payload.type === 'content') {
+          appendText(contentOutput, payload.delta || '');
+        } else if (payload.type === 'reasoning') {
+          appendText(reasoningOutput, payload.delta || '');
+        } else if (payload.type === 'error') {
+          setStatus(payload.error || 'Stream error', true);
+        } else if (payload.type === 'incomplete') {
+          setStatus('Incomplete response.');
+        } else if (payload.type === 'responses.completed') {
+          setStatus('Completed.');
+        }
+
+        return false;
+      }
+
+      async function readSSEStream(response) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const blocks = buffer.split(/\r?\n\r?\n/);
+          buffer = blocks.pop() || '';
+
+          for (const block of blocks) {
+            const isDone = handleSSEPayload(parseSSEBlock(block));
+            if (isDone) return;
+          }
+        }
+
+        buffer += decoder.decode();
+
+        if (buffer.trim()) {
+          handleSSEPayload(parseSSEBlock(buffer));
+        }
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        controller = new AbortController();
+        contentOutput.textContent = '';
+        reasoningOutput.textContent = '';
+        setBusy(true);
+        setStatus('Streaming...');
+
+        try {
+          const response = await fetch(apiUrlInput.value, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(buildPayload()),
+            signal: controller.signal,
+          });
+
+          if (!response.ok) {
+            const detail = await response.text();
+            throw new Error(detail || `HTTP ${response.status}`);
+          }
+
+          await readSSEStream(response);
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            setStatus('Request stopped.');
+          } else {
+            setStatus(error.message, true);
+          }
+        } finally {
+          setBusy(false);
+          controller = null;
+        }
+      });
+
+      stopButton.addEventListener('click', () => {
+        controller?.abort();
+      });
+
+      clearButton.addEventListener('click', () => {
+        contentOutput.textContent = '';
+        reasoningOutput.textContent = '';
+        setStatus('Ready.');
+      });
+
+      themeToggle.addEventListener('click', () => {
+        setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+
+      [payloadModeInput, assistantRoleInput, assistantContentInput, userContentInput].forEach((element) => {
+        element.addEventListener('input', updatePreview);
+        element.addEventListener('change', updatePreview);
+      });
+
+      updatePreview();
+    </script>
+  </body>
+</html>
