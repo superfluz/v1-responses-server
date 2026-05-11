@@ -16,8 +16,7 @@ export function normalizeInput({ prompt, input, messages }) {
 
   return {
     ok: false,
-    error:
-      'Prompt wajib diisi sebagai string, atau gunakan input/messages string/array message'
+    error: 'Prompt wajib diisi sebagai string, atau gunakan input/messages string/array message'
   };
 }
 

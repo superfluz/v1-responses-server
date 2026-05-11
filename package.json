@@ -1,12 +1,17 @@
 {
   "name": "v1-responses-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend Express untuk meneruskan request client ke model endpoint /v1/responses dengan streaming SSE",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "node --test src/**/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +22,11 @@
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.3"
   }
 }

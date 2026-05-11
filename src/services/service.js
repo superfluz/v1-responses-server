@@ -77,7 +77,7 @@ export function handleModelEvent(parsedEvent, sendSSE) {
   const { eventName, data } = parsedEvent;
 
   if (data === '[DONE]') {
-    sendSSE.done();
+    // done() is called by the route after streamModelToClient finishes
     return;
   }
 
@@ -100,10 +100,9 @@ export function handleModelEvent(parsedEvent, sendSSE) {
 
     case 'response.completed': {
       sendSSE.send({
-        type: 'responses.completed' // This is the type of event
-        // detail: data // This is the actual data payload
+        type: 'responses.completed'
       });
-      sendSSE.done();
+      // done() is called by the route after streamModelToClient finishes
       break;
     }
 
@@ -139,12 +138,7 @@ export function handleModelEvent(parsedEvent, sendSSE) {
   }
 }
 
-export async function streamModelToClient({
-  upstreamResponse,
-  res,
-  sendSSE,
-  controller
-}) {
+export async function streamModelToClient({ upstreamResponse, res, sendSSE, controller }) {
   const reader = upstreamResponse.body.getReader();
   const decoder = new TextDecoder('utf-8');
 
