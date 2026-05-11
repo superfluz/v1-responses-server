@@ -3,7 +3,7 @@ export function prepareSSEHeaders(res) {
     'Content-Type': 'text/event-stream; charset=utf-8',
     'Cache-Control': 'no-cache, no-transform',
     Connection: 'keep-alive',
-    'X-Accel-Buffering': 'no',
+    'X-Accel-Buffering': 'no'
   });
 
   if (typeof res.flushHeaders === 'function') {
@@ -32,7 +32,7 @@ export function createSSESender(res) {
     send({
       type: 'error',
       error: message,
-      detail,
+      detail
     });
 
     done();
@@ -41,6 +41,6 @@ export function createSSESender(res) {
   return {
     send,
     done,
-    error,
+    error
   };
 }

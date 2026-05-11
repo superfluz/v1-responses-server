@@ -18,7 +18,7 @@ app.post('/api/responses', async (req, res) => {
 
   if (!prompt || typeof prompt !== 'string') {
     return res.status(400).json({
-      error: 'Prompt wajib diisi dan harus berupa string',
+      error: 'Prompt wajib diisi dan harus berupa string'
     });
   }
 
@@ -42,13 +42,13 @@ app.post('/api/responses', async (req, res) => {
       return res.status(upstreamResponse.status).json({
         error: 'Request ke API gagal',
         status: upstreamResponse.status,
-        detail: errorText,
+        detail: errorText
       });
     }
 
     if (!upstreamResponse.body) {
       return res.status(500).json({
-        error: 'Response body dari API kosong',
+        error: 'Response body dari API kosong'
       });
     }
 
@@ -58,7 +58,7 @@ app.post('/api/responses', async (req, res) => {
       upstreamResponse,
       res,
       sendSSE,
-      controller,
+      controller
     });
 
     streamFinished = true;
@@ -81,7 +81,7 @@ app.post('/api/responses', async (req, res) => {
     if (!res.headersSent) {
       return res.status(500).json({
         error: 'Internal server error',
-        detail: error.message,
+        detail: error.message
       });
     }
 
@@ -103,7 +103,7 @@ function requestOllama(prompt, signal) {
   return fetch('http://localhost:11434/v1/responses', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     signal,
     body: JSON.stringify({
@@ -112,9 +112,9 @@ function requestOllama(prompt, signal) {
       stream: true,
       reasoning: {
         effort: 'medium',
-        summary: 'auto',
-      },
-    }),
+        summary: 'auto'
+      }
+    })
   });
 }
 ```
@@ -129,7 +129,7 @@ function prepareSSEHeaders(res) {
     'Content-Type': 'text/event-stream; charset=utf-8',
     'Cache-Control': 'no-cache, no-transform',
     Connection: 'keep-alive',
-    'X-Accel-Buffering': 'no',
+    'X-Accel-Buffering': 'no'
   });
 
   if (typeof res.flushHeaders === 'function') {
@@ -172,7 +172,7 @@ function createSSESender(res) {
     send({
       type: 'error',
       error: message,
-      detail,
+      detail
     });
 
     done();
@@ -181,7 +181,7 @@ function createSSESender(res) {
   return {
     send,
     done,
-    error,
+    error
   };
 }
 ```
@@ -223,14 +223,14 @@ function parseSSEBlock(block) {
   if (rawData === '[DONE]') {
     return {
       eventName,
-      data: '[DONE]',
+      data: '[DONE]'
     };
   }
 
   try {
     return {
       eventName,
-      data: JSON.parse(rawData),
+      data: JSON.parse(rawData)
     };
   } catch {
     return null;
@@ -259,7 +259,7 @@ function handleOllamaEvent(parsedEvent, sendSSE) {
     case 'response.reasoning_summary_text.delta': {
       sendSSE.send({
         type: 'reasoning',
-        delta: data.delta || '',
+        delta: data.delta || ''
       });
       break;
     }
@@ -267,7 +267,7 @@ function handleOllamaEvent(parsedEvent, sendSSE) {
     case 'response.output_text.delta': {
       sendSSE.send({
         type: 'content',
-        delta: data.delta || '',
+        delta: data.delta || ''
       });
       break;
     }
@@ -285,7 +285,7 @@ function handleOllamaEvent(parsedEvent, sendSSE) {
     case 'response.incomplete': {
       sendSSE.send({
         type: 'incomplete',
-        detail: data,
+        detail: data
       });
 
       sendSSE.done();
@@ -365,7 +365,7 @@ app.post('/api/ollama', async (req, res) => {
 
   if (!prompt || typeof prompt !== 'string') {
     return res.status(400).json({
-      error: 'Prompt wajib diisi dan harus berupa string',
+      error: 'Prompt wajib diisi dan harus berupa string'
     });
   }
 
@@ -389,13 +389,13 @@ app.post('/api/ollama', async (req, res) => {
       return res.status(upstreamResponse.status).json({
         error: 'Request ke Ollama gagal',
         status: upstreamResponse.status,
-        detail: errorText,
+        detail: errorText
       });
     }
 
     if (!upstreamResponse.body) {
       return res.status(500).json({
-        error: 'Response body dari Ollama kosong',
+        error: 'Response body dari Ollama kosong'
       });
     }
 
@@ -405,7 +405,7 @@ app.post('/api/ollama', async (req, res) => {
       upstreamResponse,
       res,
       sendSSE,
-      controller,
+      controller
     });
 
     streamFinished = true;
@@ -428,7 +428,7 @@ app.post('/api/ollama', async (req, res) => {
     if (!res.headersSent) {
       return res.status(500).json({
         error: 'Internal server error',
-        detail: error.message,
+        detail: error.message
       });
     }
 
@@ -444,7 +444,7 @@ function requestOllama(prompt, signal) {
   return fetch('http://localhost:11434/v1/responses', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     signal,
     body: JSON.stringify({
@@ -453,9 +453,9 @@ function requestOllama(prompt, signal) {
       stream: true,
       reasoning: {
         effort: 'medium',
-        summary: 'auto',
-      },
-    }),
+        summary: 'auto'
+      }
+    })
   });
 }
 
@@ -464,7 +464,7 @@ function prepareSSEHeaders(res) {
     'Content-Type': 'text/event-stream; charset=utf-8',
     'Cache-Control': 'no-cache, no-transform',
     Connection: 'keep-alive',
-    'X-Accel-Buffering': 'no',
+    'X-Accel-Buffering': 'no'
   });
 
   if (typeof res.flushHeaders === 'function') {
@@ -493,7 +493,7 @@ function createSSESender(res) {
     send({
       type: 'error',
       error: message,
-      detail,
+      detail
     });
 
     done();
@@ -502,7 +502,7 @@ function createSSESender(res) {
   return {
     send,
     done,
-    error,
+    error
   };
 }
 
@@ -529,14 +529,14 @@ function parseSSEBlock(block) {
   if (rawData === '[DONE]') {
     return {
       eventName,
-      data: '[DONE]',
+      data: '[DONE]'
     };
   }
 
   try {
     return {
       eventName,
-      data: JSON.parse(rawData),
+      data: JSON.parse(rawData)
     };
   } catch {
     return null;
@@ -557,7 +557,7 @@ function handleOllamaEvent(parsedEvent, sendSSE) {
     case 'response.reasoning_summary_text.delta': {
       sendSSE.send({
         type: 'reasoning',
-        delta: data.delta || '',
+        delta: data.delta || ''
       });
       break;
     }
@@ -565,7 +565,7 @@ function handleOllamaEvent(parsedEvent, sendSSE) {
     case 'response.output_text.delta': {
       sendSSE.send({
         type: 'content',
-        delta: data.delta || '',
+        delta: data.delta || ''
       });
       break;
     }
@@ -583,7 +583,7 @@ function handleOllamaEvent(parsedEvent, sendSSE) {
     case 'response.incomplete': {
       sendSSE.send({
         type: 'incomplete',
-        detail: data,
+        detail: data
       });
 
       sendSSE.done();

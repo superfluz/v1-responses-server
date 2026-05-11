@@ -326,7 +326,9 @@
 
           <div class="field">
             <label for="assistantContent">Assistant content</label>
-            <textarea id="assistantContent" name="assistantContent">Anda adalah assistant yang membantu.</textarea>
+            <textarea id="assistantContent" name="assistantContent">
+Anda adalah assistant yang membantu.</textarea
+            >
           </div>
 
           <div class="field">
@@ -389,7 +391,7 @@
 
         if (mode === 'prompt') {
           return {
-            prompt: userContent,
+            prompt: userContent
           };
         }
 
@@ -397,13 +399,13 @@
           [mode]: [
             {
               role: assistantRoleInput.value,
-              content: assistantContent,
+              content: assistantContent
             },
             {
               role: 'user',
-              content: userContent,
-            },
-          ],
+              content: userContent
+            }
+          ]
         };
       }
 
@@ -525,10 +527,10 @@
           const response = await fetch(apiUrlInput.value, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify(buildPayload()),
-            signal: controller.signal,
+            signal: controller.signal
           });
 
           if (!response.ok) {
@@ -563,10 +565,12 @@
         setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
       });
 
-      [payloadModeInput, assistantRoleInput, assistantContentInput, userContentInput].forEach((element) => {
-        element.addEventListener('input', updatePreview);
-        element.addEventListener('change', updatePreview);
-      });
+      [payloadModeInput, assistantRoleInput, assistantContentInput, userContentInput].forEach(
+        (element) => {
+          element.addEventListener('input', updatePreview);
+          element.addEventListener('change', updatePreview);
+        }
+      );
 
       updatePreview();
     </script>

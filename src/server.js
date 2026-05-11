@@ -6,19 +6,15 @@ import responsesRouter from './routes/route.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
-// const allowedOrigins = process.env.CLIENT_ORIGINS.split(',')
-//   .map((origin) => origin.trim())
-//   .filter(Boolean);
-const allowedOrigins = {
-  origin: process.env.CLIENT_ORIGINS.split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean)
-};
+const allowedOrigins = (process.env.CLIENT_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.origin.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
